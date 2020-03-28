@@ -2,9 +2,11 @@
 ---
 - name: authorized-keys | set up for users
   authorized_key:
-    user: "{{ item.owner }}"
-    key: "{{ lookup('file', item.src) }}"
-    state: "{{ item.state | default('present') }}"
-  with_items: "{{ ssh_keys_authorized_keys }}"
+    user: "{{ item.0.owner }}"
+    key: "{{ lookup('file', item.1) }}"
+    state: "{{ item.0.state | default('present') }}"
+  with_subelements:
+    - "{{ ssh_keys_authorized_keys }}"
+    - src
   tags:
     ssh-keys-authorized-keys-setup
